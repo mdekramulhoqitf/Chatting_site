@@ -1,7 +1,35 @@
+import{
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  createRoutesFromElements
+} from "react-router-dom"
+import Ragistration from "./pages/Ragistration"
+
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route
+      path="/"
+      element={<Ragistration/>}
+    ></Route>
+  )
+)
+
+
+
+
+
+
+
+
+
+
+
 function App() {
   return (
     <>
-    <h1>HalomGalom</h1>
+    <RouterProvider router={router}/>
     </>
   )
 }
