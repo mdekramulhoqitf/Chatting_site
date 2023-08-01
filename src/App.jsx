@@ -19,6 +19,7 @@ import RootLayout from "./pages/Components/RootLayout"
 const router = createBrowserRouter(
   createRoutesFromElements(
           <>
+          <h2> jibon tamim moy</h2>
             
                 <Route path="/"element={<Ragistration/>}></Route>
 
