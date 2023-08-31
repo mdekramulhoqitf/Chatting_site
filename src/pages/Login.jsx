@@ -1,5 +1,5 @@
 // import React from 'react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {Grid,TextField,Button,Alert} from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -10,6 +10,11 @@ import { getAuth, signInWithEmailAndPassword ,GoogleAuthProvider,signInWithPopup
 import { useNavigate,Link } from 'react-router-dom';
 import {IoIosEyeOff,IoIosEye} from 'react-icons/io'
 import {toast} from 'react-toastify';
+import { useSelector , useDispatch } from 'react-redux';
+import { userdata } from '../slices/user/userSlice';
+
+
+
 
 
 
@@ -24,6 +29,7 @@ let initialValues = {
 
 const Login = () => {
 
+
   const notify = (mes) => toast(mes);
 
 
@@ -32,6 +38,11 @@ const Login = () => {
     const auth = getAuth();
 
     let navigate = useNavigate()
+
+    let dispatch = useDispatch()
+
+    let userData = useSelector((state)=> state.loguser.loginUser);
+
 
       let [values,setValues] = useState(initialValues)
       let [error,setError] = useState("")
@@ -47,6 +58,12 @@ const Login = () => {
     console.log(values)
   }
 
+  useEffect(()=>{
+
+    if(userData != null){
+      navigate("/bachal/home")
+    }
+  },[])
 
   let handleSubmit = ()=>{
     let {email,password}= values
@@ -76,13 +93,20 @@ const Login = () => {
       // sendEmailVerification(auth.currentUser).then(()=>{
       //   console.log(user);
       // });
+      
+      // if(user.user.emailVerified){
+      //     notify("login succesful")
+      //   }else{
+      //       notify("Please varificatiobn")
+      //     }
 
-      if(user.user.emailVerified){
-        notify("login succesful")
-        navigate("/bachal/home")
-      }else{
-        notify("Please varificatiobn")
-      }
+      console.log(user.user)
+
+          dispatch(userdata(user.user))
+          localStorage.setItem("user",JSON.stringify(user.user))
+          navigate("/bachal/home")
+
+
 
 
       setValues({

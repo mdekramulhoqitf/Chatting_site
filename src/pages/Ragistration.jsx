@@ -5,7 +5,8 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 import ragistrationimage from "../assets/Ragistration_image.png"
 import Headingforleg from './Components/Headingforleg';
-import { getAuth, createUserWithEmailAndPassword,sendEmailVerification,GoogleAuthProvider,signInWithPopup } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword,sendEmailVerification,GoogleAuthProvider,signInWithPopup,updateProfile } from "firebase/auth";
+import { getDatabase, ref, set, push } from "firebase/database";
 import { useNavigate,Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 
@@ -23,6 +24,7 @@ let initialValues = {
 const Ragistration = () => {
 
   const auth = getAuth();
+  const db = getDatabase();
 
   let navigate = useNavigate()
   
@@ -76,10 +78,25 @@ const Ragistration = () => {
 
     createUserWithEmailAndPassword(auth,email,password).then((user)=>{
 
-      sendEmailVerification(auth.currentUser).then(()=>{
-        console.log("Email Send")
+
+
+      updateProfile(auth.currentUser, {
+        displayName: values.fullName , photoURL: "https://i.ibb.co/Jv9ybwB/user.png"
+      }).then(() => {
+        // sendEmailVerification(auth.currentUser).then(()=>{
+        
+                    
+        //   });
+
+          set(ref(db, 'users/'+user.user.uid), {
+            username: values.fullName,
+            email: values.email,
+            profile_picture : user.user.photoURL
+
+        });
       });
 
+   
       setValues({
         email:"",
         fullName:"",

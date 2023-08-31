@@ -166,6 +166,7 @@ p{
 }
 .icon{
     color: #ffff;
+ 
 }
 .icon_logout{
     margin-top: 200px;
@@ -199,4 +200,65 @@ p{
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
-/* ====================================== */
+.navberContainer img{
+    margin: 20px 0px 0px 0px;
+}
+.navberContainer h4{
+    color: #ffff;
+    font-size: 20px;
+    font-family: 'Nunito', sans-serif;
+    margin: -60px 0px -25px 0px;
+    padding: 0;
+}
+/* =================== Home group =================== */
+.box{
+    margin: 50px 0px;
+    padding: 15px;
+    width: 90%;
+    height: 350px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 8px;
+    overflow-y: scroll;
+    position: relative;
+    -webkit-box-shadow: 10px -1px 20px 0px rgba(0,0,0,0.28);
+-moz-box-shadow: 10px -1px 20px 0px rgba(0,0,0,0.28);
+box-shadow: 10px -1px 20px 0px rgba(0,0,0,0.28);
+}
+.box h3{
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+.box .title{
+    display: flex;
+    justify-content: space-between;
+    z-index: 1111;
+}
+.box .title Button{
+    padding: 10px 52px !important;
+    z-index: 111;
+}
+.list{
+    display: flex;
+    justify-content: space-between;
+    column-gap: 50px;
+    margin: 20px 0;
+}
+.list img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+.join_button Button{
+    padding: 15px 52px !important;
+}
+/* =================== Home friend =================== */
+
+/* =================== Userlist =================== */
+.cancelBtn{
+    background-color: #ff0000  !important;
+}
+.cancelBtn:hover{
+    background-color: rgb(255, 32, 32) !important;
+}
