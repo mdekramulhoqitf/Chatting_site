@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import Grid from '@mui/material/Grid';
 import profile from "../../assets/profile.png"
 import Button from '@mui/material/Button';
@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getDatabase, ref, set, push, onValue } from "firebase/database";
 
 
 
@@ -33,6 +33,9 @@ const Group = () => {
 
     const db = getDatabase();
 
+    let [grouplist, setGrouplist] = useState([])
+    let [groupmemberlist, setGroupmemberlist] = useState([])
+
     let [groupInfo, setGroupInfo] = useState(groupData);
     let userData = useSelector((state)=> state.loguser.loginUser);
 
@@ -57,7 +60,59 @@ const Group = () => {
                 grouptagline: groupInfo.grouptagline,
                 adminid: userData.uid,
                 adminname: userData.displayName,              
-        });
+        }).then(()=>{
+          setOpen(false)
+        })
+    }
+
+
+    useEffect(()=>{
+      const groupRef = ref(db, 'groups');
+      onValue(groupRef, (snapshot) => {
+        let arr = []
+        snapshot.forEach(item=>{
+            arr.push({...item.val(),groupid:item.key})
+        })
+        setGrouplist(arr)
+    });
+    },[])
+
+    let handleGroupjoin = (item)=>{
+      set(push(ref(db, 'grouprequest/')), {
+       adminid: item.adminid,
+       adminname: item.adminname,
+       groupid: item.groupid,
+       groupname: item.groupname,
+       userid: userData.uid,
+       username: userData.displayName,          
+   })
+    }
+
+    useEffect(()=>{
+      const groupRef = ref(db, 'grouprequest');
+      onValue(groupRef, (snapshot) => {
+        let arr = []
+        snapshot.forEach(item=>{
+          if(item.val().userid == userData.uid){
+            arr.push(item.val().groupid)
+          }
+        })
+        setGroupmemberlist(arr)
+    });
+    },[])
+
+    let handleReqDelete = (g)=>{
+      const groupRef = ref(db, 'grouprequest');
+      onValue(groupRef, (snapshot) => {
+        let arr = []
+        snapshot.forEach(item=>{
+          if(item.val().userid == userData.uid && g.groupid == item.val().groupid){
+            
+            remove(ref(db, "grouprequest/" + item.key));
+          }
+        })
+        setGroupmemberlist(arr)
+    });
     }
 
     return (
@@ -87,18 +142,29 @@ const Group = () => {
       </Modal>
 
     </h3>
+    {grouplist.map(item=>(
+       userData.uid != item.adminid &&
     <div className='list'>
         <div className='img'>
             <img src={profile}/>
         </div>
         <div className='details'>
-            <h4>Friends Reunions</h4>
-            <p>Hi Guys, Wassup!</p>
+        <p>Admin:{item.adminname}</p>
+            <h4>{item.groupname}</h4>
+            <p>{item.grouptagline}</p>
         </div>
         <div className='join_button'>
-        <Button size='small' variant="contained">join</Button>
+          {groupmemberlist.indexOf(item.groupid) != -1 ? 
+          <>
+          <Button size='small' variant="contained">Request Sent</Button>
+          <Button onClick={()=>handleReqDelete(item)} size='small' variant="contained" color='error'>Req Cancle</Button>
+          </>
+        :
+        <Button onClick={()=>handleGroupjoin(item)} size='small' variant="contained">join</Button>
+          }
         </div>
     </div>
+    ))}
 </div>
   )
 }
