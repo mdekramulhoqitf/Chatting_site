@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { getDatabase, ref, set, push, onValue } from "firebase/database";
+import { getDatabase, ref, set, push, onValue, remove } from "firebase/database";
 
 
 
@@ -77,7 +77,9 @@ const Group = () => {
     });
     },[])
 
+
     let handleGroupjoin = (item)=>{
+
       set(push(ref(db, 'grouprequest/')), {
        adminid: item.adminid,
        adminname: item.adminname,
@@ -102,19 +104,19 @@ const Group = () => {
     },[])
 
     let handleReqDelete = (g)=>{
-      const groupRef = ref(db, 'grouprequest');
+      let cancle = ""
+      const groupRef = ref(db, 'grouprequest/');
       onValue(groupRef, (snapshot) => {
-        let arr = []
+        console.log(cancle)
         snapshot.forEach(item=>{
-          if(item.val().userid == userData.uid && g.groupid == item.val().groupid){
-            
-            remove(ref(db, "grouprequest/" + item.key));
+          if(item.val().userid == userData.uid && g.groupid == item.val().groupid){  
+            cancle = item.key
           }
         })
-        setGroupmemberlist(arr)
-    });
+      });
+      remove(ref(db, "grouprequest/" +cancle));
     }
-
+    
     return (
 
 
